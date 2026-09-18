@@ -1420,37 +1420,10 @@
 
         const url = "https://script.google.com/macros/s/AKfycbyNngEAWzh8TOYIc61pZ6Ydz6WxHAxtVuyqVm8V-jT5ZnrZ6prjtXmjy5sgfgAIJsRM/exec";
 
-        // Use hidden iframe + form — most reliable cross-device method, no CORS issues
-        let iframe = document.getElementById('hidden-submit-frame');
-        if (!iframe) {
-            iframe = document.createElement('iframe');
-            iframe.id = 'hidden-submit-frame';
-            iframe.name = 'hidden-submit-frame';
-            iframe.style.display = 'none';
-            document.body.appendChild(iframe);
-        }
-
-        let form = document.createElement('form');
-        form.method = 'POST';
-        form.action = url;
-        form.target = 'hidden-submit-frame';
-        form.style.display = 'none';
-
-        let input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'data';
-        input.value = JSON.stringify(payload);
-        form.appendChild(input);
-
-        document.body.appendChild(form);
-        form.submit();
-        document.body.removeChild(form);
-
-        // Show success after 2s
+        // ★ Set success timer FIRST — guaranteed to run no matter what happens below
         setTimeout(() => {
             step1.classList.add('hidden');
             step1.classList.remove('flex');
-            
             step2.classList.remove('hidden');
             step2.classList.add('flex');
             setTimeout(() => {
@@ -1458,6 +1431,18 @@
                 step2.classList.add('scale-100');
             }, 50);
         }, 2000);
+
+        // Try to send data — wrapped in try-catch so any error won't block the success screen
+        try {
+            fetch(url, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify(payload)
+            }).catch(err => console.warn("Send failed:", err));
+        } catch(e) {
+            console.warn("Fetch error:", e);
+        }
     }
 
     function closeStudentSave() {
