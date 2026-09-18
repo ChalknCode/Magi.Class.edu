@@ -1107,6 +1107,46 @@
     }
 
     // ------------------ ROUTING & DATA FETCH ------------------
+    
+    // ------------------ AUTO ASSIGN NAMES TO CHECKBOXES ------------------
+    window.addEventListener('DOMContentLoaded', () => {
+        const assignNames = (containerId, prefix) => {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            // The questions are separated into .mb-8 blocks.
+            // 1. 性格 (Traits)
+            // 2. 最喜歡的科目 (Subjects)
+            // 3. 課後休閒 (Hobbies)
+            
+            // Let's find all checkbox labels.
+            // We can determine which group they belong to based on the preceding heading text.
+            const blocks = container.querySelectorAll('.mb-8');
+            blocks.forEach(block => {
+                const text = block.innerText;
+                let nameToAssign = null;
+                
+                if (text.includes('在班上') || text.includes('在家裡')) {
+                    nameToAssign = prefix + '_traits';
+                } else if (text.includes('最喜歡的科目') || text.includes('最喜歡的學科')) {
+                    nameToAssign = prefix + '_subjects';
+                } else if (text.includes('課後最常做的事') || text.includes('課後休閒')) {
+                    nameToAssign = prefix + '_hobbies';
+                }
+                
+                if (nameToAssign) {
+                    const checkboxes = block.querySelectorAll('input[type="checkbox"]');
+                    checkboxes.forEach(cb => {
+                        if (!cb.name) cb.name = nameToAssign;
+                    });
+                }
+            });
+        };
+        
+        assignNames('content-student', 's');
+        assignNames('content-parent', 'p');
+    });
+    
     window.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
         const role = urlParams.get('role');
