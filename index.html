@@ -99,8 +99,24 @@
         overlay.classList.add('flex');
         setTimeout(() => { overlay.classList.remove('opacity-0'); overlay.classList.add('opacity-100'); }, 10);
 
-        // Simulate saving (2s)
-        setTimeout(() => {
+        // ------------------ DYNAMIC SUBMISSION ------------------
+        const url = "https://script.google.com/macros/s/AKfycby7-ih0pY9ZsJlwUNAPlNmSEA4XAPASjH4oRBxHp6qwJ-VuSryaIISUe6dhIuz-J__n/exec";
+        const nameSelect = document.getElementById('st-name');
+        const stNameText = (nameSelect && nameSelect.selectedIndex > 0) ? nameSelect.options[nameSelect.selectedIndex].text : "未選擇";
+        
+        const payload = {
+            type: "student",
+            classNum: "805",
+            studentName: stNameText,
+            answers: { status: "已收到交卷！詳細資料收集引擎正在安裝中..." }
+        };
+
+        fetch(url, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify(payload)
+        }).then(() => {
             // Switch to success
             step1.classList.add('hidden');
             step1.classList.remove('flex');
@@ -111,7 +127,11 @@
                 step2.classList.remove('scale-95');
                 step2.classList.add('scale-100');
             }, 10);
-        }, 2000);
+        }).catch(err => {
+            console.error(err);
+            alert("送出失敗！");
+        });
+        // ---------------------------------------------------------
     }
 
     function closeStudentSave() {
@@ -1418,8 +1438,24 @@
         overlay.classList.add('flex');
         setTimeout(() => { overlay.classList.remove('opacity-0'); overlay.classList.add('opacity-100'); }, 10);
 
-        // Simulate saving (2s)
-        setTimeout(() => {
+        // ------------------ DYNAMIC SUBMISSION ------------------
+        const url = "https://script.google.com/macros/s/AKfycby7-ih0pY9ZsJlwUNAPlNmSEA4XAPASjH4oRBxHp6qwJ-VuSryaIISUe6dhIuz-J__n/exec";
+        const nameSelect = document.getElementById('st-name');
+        const stNameText = (nameSelect && nameSelect.selectedIndex > 0) ? nameSelect.options[nameSelect.selectedIndex].text : "未選擇";
+        
+        const payload = {
+            type: "student",
+            classNum: "805",
+            studentName: stNameText,
+            answers: { status: "已收到交卷！詳細資料收集引擎正在安裝中..." }
+        };
+
+        fetch(url, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify(payload)
+        }).then(() => {
             // Switch to success
             step1.classList.add('hidden');
             step1.classList.remove('flex');
@@ -1430,7 +1466,11 @@
                 step2.classList.remove('scale-95');
                 step2.classList.add('scale-100');
             }, 10);
-        }, 2000);
+        }).catch(err => {
+            console.error(err);
+            alert("送出失敗！");
+        });
+        // ---------------------------------------------------------
     }
 
     function closeStudentSave() {
