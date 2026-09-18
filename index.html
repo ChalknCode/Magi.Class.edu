@@ -1075,23 +1075,35 @@
 <script>
     // ------------------ TAB SWITCHING ------------------
     function switchTab(role) {
-        const urlParams = new URLSearchParams(window.location.search);
-        urlParams.set('role', role);
-        window.history.pushState({}, '', '?' + urlParams.toString());
-        
-        const tabs = document.querySelectorAll('.nav-tab');
-        tabs.forEach(t => t.classList.remove('active', 'border-indigo-500', 'text-indigo-600'));
-        
         document.getElementById('content-student').classList.add('hidden');
         document.getElementById('content-parent').classList.add('hidden');
+        const teacherDiv = document.getElementById('content-teacher');
+        if (teacherDiv) teacherDiv.classList.add('hidden');
         
-        if(role === 'student') {
-            document.getElementById('tab-student').classList.add('active', 'border-indigo-500', 'text-indigo-600');
-            document.getElementById('content-student').classList.remove('hidden');
-        } else {
-            document.getElementById('tab-parent').classList.add('active', 'border-indigo-500', 'text-indigo-600');
+        if(role === 'teacher') {
+            if (teacherDiv) teacherDiv.classList.remove('hidden');
+        } else if(role === 'parent') {
             document.getElementById('content-parent').classList.remove('hidden');
+        } else {
+            document.getElementById('content-student').classList.remove('hidden');
         }
+    }
+
+    function copyToClipboard(inputId) {
+        const input = document.getElementById(inputId);
+        input.select();
+        input.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(input.value).then(() => {
+            const toast = document.getElementById('copy-toast');
+            toast.classList.remove('hidden');
+            toast.classList.remove('opacity-0');
+            toast.classList.add('opacity-100');
+            setTimeout(() => { 
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0');
+                setTimeout(() => toast.classList.add('hidden'), 300);
+            }, 2000);
+        });
     }
 
     // ------------------ ROUTING & DATA FETCH ------------------
@@ -1099,10 +1111,15 @@
         const urlParams = new URLSearchParams(window.location.search);
         const role = urlParams.get('role');
         
-        if(role === 'student' || role === 'parent') {
-            document.getElementById('main-nav').classList.add('hidden');
-            document.getElementById('main-header').classList.add('hidden');
-            switchTab(role);
+        const nav = document.getElementById('main-nav');
+        const header = document.getElementById('main-header');
+        if (nav) nav.classList.add('hidden');
+        if (header) header.classList.add('hidden');
+        
+        if(role === 'teacher') {
+            switchTab('teacher');
+        } else if(role === 'parent') {
+            switchTab('parent');
         } else {
             switchTab('student');
         }
