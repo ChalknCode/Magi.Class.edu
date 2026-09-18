@@ -1419,15 +1419,34 @@
         };
 
         const url = "https://script.google.com/macros/s/AKfycbx256JgvKTVdkGzvNSXZPu9cyaIzzxlBKMiiGjkMWgZQO_4L1VJ41lu50X6pYsYtA4o/exec";
-        // Fire-and-forget: send data in the background, don't wait for response
-        fetch(url, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'text/plain' },
-            body: JSON.stringify(payload)
-        }).catch(err => console.error("Background save error:", err));
 
-        // Show success screen after 1.5s without waiting for GAS to respond
+        // Use hidden iframe + form — most reliable cross-device method, no CORS issues
+        let iframe = document.getElementById('hidden-submit-frame');
+        if (!iframe) {
+            iframe = document.createElement('iframe');
+            iframe.id = 'hidden-submit-frame';
+            iframe.name = 'hidden-submit-frame';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+        }
+
+        let form = document.createElement('form');
+        form.method = 'POST';
+        form.action = url;
+        form.target = 'hidden-submit-frame';
+        form.style.display = 'none';
+
+        let input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'data';
+        input.value = JSON.stringify(payload);
+        form.appendChild(input);
+
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+
+        // Show success after 2s
         setTimeout(() => {
             step1.classList.add('hidden');
             step1.classList.remove('flex');
@@ -1438,7 +1457,7 @@
                 step2.classList.remove('scale-95');
                 step2.classList.add('scale-100');
             }, 50);
-        }, 1500);
+        }, 2000);
     }
 
     function closeStudentSave() {
