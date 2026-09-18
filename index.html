@@ -1419,12 +1419,16 @@
         };
 
         const url = "https://script.google.com/macros/s/AKfycbx256JgvKTVdkGzvNSXZPu9cyaIzzxlBKMiiGjkMWgZQO_4L1VJ41lu50X6pYsYtA4o/exec";
+        // Fire-and-forget: send data in the background, don't wait for response
         fetch(url, {
             method: 'POST',
             mode: 'no-cors',
             headers: { 'Content-Type': 'text/plain' },
             body: JSON.stringify(payload)
-        }).then(() => {
+        }).catch(err => console.error("Background save error:", err));
+
+        // Show success screen after 1.5s without waiting for GAS to respond
+        setTimeout(() => {
             step1.classList.add('hidden');
             step1.classList.remove('flex');
             
@@ -1434,12 +1438,7 @@
                 step2.classList.remove('scale-95');
                 step2.classList.add('scale-100');
             }, 50);
-            
-        }).catch(err => {
-            console.error(err);
-            alert("連線失敗！");
-            overlay.classList.add('hidden');
-        });
+        }, 1500);
     }
 
     function closeStudentSave() {
