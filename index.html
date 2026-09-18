@@ -1125,7 +1125,7 @@
             switchTab('student');
         }
 
-        const url = "https://script.google.com/macros/s/AKfycbyNngEAWzh8TOYIc61pZ6Ydz6WxHAxtVuyqVm8V-jT5ZnrZ6prjtXmjy5sgfgAIJsRM/exec";
+        const url = "https://script.google.com/macros/s/AKfycbwCTpqPZ3JmpfqXNaR0Pq3GcX6xWTofKvW93HN9gJrDHEQW-YMT0hgQtOlhqdsjmBps/exec";
         fetch(url)
             .then(res => res.json())
             .then(data => {
@@ -1349,7 +1349,7 @@
             answers: answersData
         };
 
-        const url = "https://script.google.com/macros/s/AKfycbyNngEAWzh8TOYIc61pZ6Ydz6WxHAxtVuyqVm8V-jT5ZnrZ6prjtXmjy5sgfgAIJsRM/exec";
+        const url = "https://script.google.com/macros/s/AKfycbwCTpqPZ3JmpfqXNaR0Pq3GcX6xWTofKvW93HN9gJrDHEQW-YMT0hgQtOlhqdsjmBps/exec";
         fetch(url, {
             method: 'POST',
             mode: 'no-cors',
@@ -1418,7 +1418,7 @@
             answers: answersData
         };
 
-        const url = "https://script.google.com/macros/s/AKfycbyNngEAWzh8TOYIc61pZ6Ydz6WxHAxtVuyqVm8V-jT5ZnrZ6prjtXmjy5sgfgAIJsRM/exec";
+        const url = "https://script.google.com/macros/s/AKfycbwCTpqPZ3JmpfqXNaR0Pq3GcX6xWTofKvW93HN9gJrDHEQW-YMT0hgQtOlhqdsjmBps/exec";
 
         // ★ Set success timer FIRST — guaranteed to run no matter what
         setTimeout(() => {
@@ -1432,11 +1432,19 @@
             }, 50);
         }, 2000);
 
-        // Use GET with URL param — completely bypasses all CORS restrictions
+        // JSONP — most reliable cross-device method, bypasses all CORS restrictions
         try {
+            const cbName = 'gasCallback_' + Date.now();
+            window[cbName] = function(result) {
+                console.log('Data saved:', result);
+                delete window[cbName];
+            };
             const encoded = encodeURIComponent(JSON.stringify(payload));
-            const img = new Image();
-            img.src = url + '?data=' + encoded;
+            const script = document.createElement('script');
+            script.src = url + '?payload=' + encoded + '&cb=' + cbName;
+            script.onerror = () => console.warn('JSONP send failed');
+            document.head.appendChild(script);
+            setTimeout(() => { try { document.head.removeChild(script); } catch(e){} }, 5000);
         } catch(e) {
             console.warn('Send error:', e);
         }
