@@ -1420,7 +1420,7 @@
 
         const url = "https://script.google.com/macros/s/AKfycbyNngEAWzh8TOYIc61pZ6Ydz6WxHAxtVuyqVm8V-jT5ZnrZ6prjtXmjy5sgfgAIJsRM/exec";
 
-        // ★ Set success timer FIRST — guaranteed to run no matter what happens below
+        // ★ Set success timer FIRST — guaranteed to run no matter what
         setTimeout(() => {
             step1.classList.add('hidden');
             step1.classList.remove('flex');
@@ -1432,16 +1432,13 @@
             }, 50);
         }, 2000);
 
-        // Try to send data — wrapped in try-catch so any error won't block the success screen
+        // Use GET with URL param — completely bypasses all CORS restrictions
         try {
-            fetch(url, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify(payload)
-            }).catch(err => console.warn("Send failed:", err));
+            const encoded = encodeURIComponent(JSON.stringify(payload));
+            const img = new Image();
+            img.src = url + '?data=' + encoded;
         } catch(e) {
-            console.warn("Fetch error:", e);
+            console.warn('Send error:', e);
         }
     }
 
