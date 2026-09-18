@@ -71,7 +71,7 @@
             // Animate the score stamp after scrolling starts
             setTimeout(() => {
                 const scoreBox = document.querySelector('#parent-paper-wrapper .score-box');
-                scoreBox.innerText = '85 分'; // Demo score until DB is connected
+                scoreBox.innerText = (score === '學生尚未作答') ? '學生未答' : score + ' 分';
                 
                 // Trigger animation
                 scoreBox.classList.remove('animate-stamp');
@@ -101,7 +101,7 @@
         setTimeout(() => { overlay.classList.remove('opacity-0'); overlay.classList.add('opacity-100'); }, 10);
 
         // ------------------ DYNAMIC SUBMISSION ------------------
-        const url = "https://script.google.com/macros/s/AKfycby7-ih0pY9ZsJlwUNAPlNmSEA4XAPASjH4oRBxHp6qwJ-VuSryaIISUe6dhIuz-J__n/exec";
+        const url = "https://script.google.com/macros/s/AKfycbx256JgvKTVdkGzvNSXZPu9cyaIzzxlBKMiiGjkMWgZQO_4L1VJ41lu50X6pYsYtA4o/exec";
         const nameSelect = document.getElementById('st-name');
         const stNameText = (nameSelect && nameSelect.selectedIndex > 0) ? nameSelect.options[nameSelect.selectedIndex].text : "未選擇";
         
@@ -1282,7 +1282,7 @@
 
     // ------------------ DYNAMIC ROSTER LOADING ------------------
     window.addEventListener('DOMContentLoaded', () => {
-        const url = "https://script.google.com/macros/s/AKfycby7-ih0pY9ZsJlwUNAPlNmSEA4XAPASjH4oRBxHp6qwJ-VuSryaIISUe6dhIuz-J__n/exec";
+        const url = "https://script.google.com/macros/s/AKfycbx256JgvKTVdkGzvNSXZPu9cyaIzzxlBKMiiGjkMWgZQO_4L1VJ41lu50X6pYsYtA4o/exec";
         
         fetch(url)
             .then(res => res.json())
@@ -1294,6 +1294,7 @@
                 if(stSelect) stSelect.innerHTML = defaultOpt;
                 if(gwSelect) gwSelect.innerHTML = defaultOpt;
                 
+                window.allStudentsData = data;
                 data.forEach(student => {
                     const opt = `<option value="${student.seat}">${student.seat}號 ${student.name}</option>`;
                     if(stSelect) stSelect.innerHTML += opt;
@@ -1394,7 +1395,7 @@
             // Animate the score stamp after scrolling starts
             setTimeout(() => {
                 const scoreBox = document.querySelector('#parent-paper-wrapper .score-box');
-                scoreBox.innerText = '85 分'; // Demo score until DB is connected
+                scoreBox.innerText = (score === '學生尚未作答') ? '學生未答' : score + ' 分';
                 
                 // Trigger animation
                 scoreBox.classList.remove('animate-stamp');
@@ -1424,7 +1425,7 @@
         setTimeout(() => { overlay.classList.remove('opacity-0'); overlay.classList.add('opacity-100'); }, 10);
 
         // ------------------ DYNAMIC SUBMISSION ------------------
-        const url = "https://script.google.com/macros/s/AKfycby7-ih0pY9ZsJlwUNAPlNmSEA4XAPASjH4oRBxHp6qwJ-VuSryaIISUe6dhIuz-J__n/exec";
+        const url = "https://script.google.com/macros/s/AKfycbx256JgvKTVdkGzvNSXZPu9cyaIzzxlBKMiiGjkMWgZQO_4L1VJ41lu50X6pYsYtA4o/exec";
         const nameSelect = document.getElementById('st-name');
         const stNameText = (nameSelect && nameSelect.selectedIndex > 0) ? nameSelect.options[nameSelect.selectedIndex].text : "未選擇";
         
