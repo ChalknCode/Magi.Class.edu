@@ -1259,6 +1259,22 @@
 
   <script>
 
+    // ------------------ URL ROUTING LOGIC ------------------
+    window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const role = urlParams.get('role');
+        
+        if (role === 'parent') {
+            switchTab('parent');
+            if(document.getElementById('tab-student')) document.getElementById('tab-student').parentElement.style.display = 'none';
+        } else if (role === 'student') {
+            switchTab('student');
+            if(document.getElementById('tab-student')) document.getElementById('tab-student').parentElement.style.display = 'none';
+        }
+    });
+    // -------------------------------------------------------
+
+
     // ------------------ DYNAMIC ROSTER LOADING ------------------
     window.addEventListener('DOMContentLoaded', () => {
         const url = "https://script.google.com/macros/s/AKfycby7-ih0pY9ZsJlwUNAPlNmSEA4XAPASjH4oRBxHp6qwJ-VuSryaIISUe6dhIuz-J__n/exec";
