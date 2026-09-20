@@ -1171,7 +1171,7 @@
             switchTab('student');
         }
 
-        const url = "https://script.google.com/macros/s/AKfycbwCTpqPZ3JmpfqXNaR0Pq3GcX6xWTofKvW93HN9gJrDHEQW-YMT0hgQtOlhqdsjmBps/exec";
+        const url = "https://script.google.com/macros/s/AKfycbwvtthJxtJ4Ckh554zomaOnWMA3xqA91DsK9eMiJnh3eSha1oN7lVvirwk3IjTcfX2M/exec";
         fetch(url)
             .then(res => res.json())
             .then(data => {
@@ -1473,7 +1473,7 @@
             readable: readableData
         };
 
-        const url = "https://script.google.com/macros/s/AKfycbwCTpqPZ3JmpfqXNaR0Pq3GcX6xWTofKvW93HN9gJrDHEQW-YMT0hgQtOlhqdsjmBps/exec";
+        const url = "https://script.google.com/macros/s/AKfycbwvtthJxtJ4Ckh554zomaOnWMA3xqA91DsK9eMiJnh3eSha1oN7lVvirwk3IjTcfX2M/exec";
         submitViaForm(url, payload);
         
         setTimeout(() => {
@@ -1528,14 +1528,42 @@
         const stNameText = nameSelect.options[nameSelect.selectedIndex].text.split(' ')[1];
         const answersData = serializeData('content-student');
         
+
+        let readableData = {};
+        document.getElementById('content-student').querySelectorAll('input[name], textarea[name]').forEach(el => {
+            if (el.type === 'radio' && !el.checked) return;
+            if (el.type === 'checkbox' && !el.checked) return;
+            if (el.type !== 'radio' && el.type !== 'checkbox' && el.value.trim() === '') return;
+            
+            let title = el.getAttribute('data-title') || el.name;
+            let val = el.value.trim();
+            if (el.type === 'checkbox') {
+                val = (el.nextElementSibling && el.nextElementSibling.tagName === 'SPAN') ? el.nextElementSibling.innerText.trim() : (el.value || "on");
+            }
+            
+            if (readableData[title]) {
+                if (!Array.isArray(readableData[title])) readableData[title] = [readableData[title]];
+                readableData[title].push(val);
+            } else {
+                readableData[title] = val;
+            }
+        });
+        
+        for (let key in readableData) {
+            if (Array.isArray(readableData[key])) {
+                readableData[key] = readableData[key].join(', ');
+            }
+        }
+
         const payload = {
             type: "student",
             classNum: "805",
             studentName: stNameText,
-            answers: answersData
+            answers: answersData,
+            readable: readableData
         };
 
-        const url = "https://script.google.com/macros/s/AKfycbwCTpqPZ3JmpfqXNaR0Pq3GcX6xWTofKvW93HN9gJrDHEQW-YMT0hgQtOlhqdsjmBps/exec";
+        const url = "https://script.google.com/macros/s/AKfycbwvtthJxtJ4Ckh554zomaOnWMA3xqA91DsK9eMiJnh3eSha1oN7lVvirwk3IjTcfX2M/exec";
 
         // ★ Set success timer FIRST — guaranteed to run no matter what
         setTimeout(() => {
