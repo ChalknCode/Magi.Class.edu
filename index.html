@@ -1172,23 +1172,36 @@
         }
 
         const url = "https://script.google.com/macros/s/AKfycbwvtthJxtJ4Ckh554zomaOnWMA3xqA91DsK9eMiJnh3eSha1oN7lVvirwk3IjTcfX2M/exec";
-        fetch(url)
-            .then(res => res.json())
-            .then(data => {
-                window.allStudentsData = data; // Save global data
-                
-                const stSelect = document.getElementById('st-name');
-                const gwSelect = document.getElementById('gw-name');
-                const defaultOpt = '<option value="" disabled selected>選擇姓名</option>';
-                if(stSelect) stSelect.innerHTML = defaultOpt;
-                if(gwSelect) gwSelect.innerHTML = defaultOpt;
-                
+        const cbName = 'gasRosterCb_' + Date.now();
+        window[cbName] = function(data) {
+            window.allStudentsData = data;
+            const stSelect = document.getElementById('st-name');
+            const gwSelect = document.getElementById('gw-name');
+            const defaultOpt = '<option value="" disabled selected>選擇姓名</option>';
+            if(stSelect) stSelect.innerHTML = defaultOpt;
+            if(gwSelect) gwSelect.innerHTML = defaultOpt;
+            
+            if (data && data.length > 0) {
                 data.forEach(student => {
                     const opt = `<option value="${student.seat}">${student.seat}號 ${student.name}</option>`;
                     if(stSelect) stSelect.innerHTML += opt;
                     if(gwSelect) gwSelect.innerHTML += opt;
                 });
-            }).catch(err => console.error("Data loading failed", err));
+            } else {
+                if(stSelect) stSelect.innerHTML = '<option value="" disabled selected>請先在試算表建立學生名單</option>';
+                if(gwSelect) gwSelect.innerHTML = '<option value="" disabled selected>請先在試算表建立學生名單</option>';
+            }
+            delete window[cbName];
+        };
+
+        const script = document.createElement('script');
+        script.src = url + '?callback=' + cbName;
+        script.onerror = () => {
+            console.error("Data loading failed");
+            const stSelect = document.getElementById('st-name');
+            if(stSelect) stSelect.innerHTML = '<option value="" disabled selected>載入失敗，請重整網頁</option>';
+        };
+        document.head.appendChild(script);
     });
 
     // ------------------ UTILS ------------------
